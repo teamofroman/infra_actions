@@ -3,7 +3,7 @@ name: Django-app workflows
 on: [push]
 
 jobs:
-  testes:
+  tests:
     # За основу берем образ убунту
     runs-on: ubuntu-latest
 
