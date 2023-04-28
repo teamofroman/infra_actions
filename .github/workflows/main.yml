@@ -24,7 +24,13 @@ jobs:
           pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
           pip install -r requirements.txt
 
-      # Тестируем код
+      # Тестируем код на соответствие PEP8
       - name: Tesing with flake8
         run:
           python -m flake8
+
+      # Выполняем django тесты
+      - name: Django tests
+        run: |
+          cd infra_project/
+          python manage.py test
