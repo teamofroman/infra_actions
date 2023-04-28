@@ -1,20 +1,30 @@
-name: CI
+name: Django-app workflows
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-    
+on: [push]
+
 jobs:
-  build:
+  testes:
+    # За основу берем образ убунту
     runs-on: ubuntu-latest
-    
+
     steps:
+      # Клонируем ветку
       - uses: actions/checkout@v2
-      - name: Run a online script
-        run: echo Hello, world!
-      - name: Run a mutli-line script
+
+      # Устанавливаем python
+      - name: Set-up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      
+      # Устанавливаем зависимости
+      - name: Install dependies
         run: |
-          echo Add other actions to build,
-          echo test and deploy your project
+          python -m pip install --upgrade pip
+          pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
+          pip install -r requirements.txt
+
+      # Тестируем код
+      - name: Tesing with flake8
+        run:
+          python -m flake8
