@@ -69,3 +69,24 @@ jobs:
         with:
           push: true
           tags: rsateam/infra_actions:latest
+  
+  deploy_to_work_server:
+    name: Deploy docker image from docker hub to work server
+    runs-on: ubuntu-latests
+    needs: build_and_push_to_docker_hub
+
+    steps:
+      - name: Execute remote commends via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PHRASE }}
+          script: |
+            # Получаем образ
+            sudo docker pull rsateam/infra_actions
+            # Останавливаем все контейнеры
+            sudo docker stop $(sudo docker ps -a -q)
+            # Запускаем свой контейнер
+            sudo docker --rm -d -p 5000:5000 rsateam/infra_actions
